@@ -9,7 +9,7 @@ from optimizers import get_optimizer
 
 class NeuralNetwork:
     """
-    Feed-forward neural network built from a JSON config.
+    Feed-forward NN from a JSON config.
     Orchestrates DenseLayer objects, a loss function, and an optimiser.
     Call build_from_config() to construct, then fit() to train.
     """
@@ -24,7 +24,7 @@ class NeuralNetwork:
     @classmethod
     def build_from_config(cls, config: dict | str) -> "NeuralNetwork":
         """
-        Constructs a NeuralNetwork from a config dict or a path to a JSON file.
+        Constructs a NeuralNetwork from a JSON file.
         Calls _build_layers, _attach_loss, _attach_optimizer, then inits optimiser state.
         """
         if isinstance(config, str):

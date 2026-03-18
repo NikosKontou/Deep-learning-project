@@ -4,9 +4,9 @@ from activations import get_activation
 
 class DenseLayer:
     """
-    Single fully-connected layer (no bias).
+    Single fuly-connected layer (no bias).
     Holds weights and delegates activation to an activation object.
-    Interacts with Network: forward() is chained across layers;
+    Interacts with Network: forward() is chained across layers
     backward() receives upstream gradient and returns downstream gradient.
     """
 
