@@ -187,7 +187,6 @@ fabric.properties
 #extras
 regression_loss.png
 classification_loss.png
-/auto_mpg_loss.png
-/breast_cancer_loss.png
-/loss.png
+/*.jpg
+/*.png
 /.idea
