@@ -14,7 +14,7 @@ _FEATURES = ["cylinders", "displacement", "horsepower",
 _TARGET = "mpg"
 
 
-def load_auto_mpg(data_path: str) -> tuple[np.ndarray, ...]:
+def load_auto_mpg(data_path: str) -> tuple:
     """
     Loads Auto MPG from data_path; drops missing horsepower rows and standardises.
     Returns X_train, X_val, X_test, y_train, y_val, y_test as float64 arrays.
