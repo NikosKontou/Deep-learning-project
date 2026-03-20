@@ -9,7 +9,7 @@ from optimizers import get_optimizer
 
 class NeuralNetwork:
     """
-    Feed-forward NN from a JSON config.
+    Feed-forward neural network built from a JSON config.
     Orchestrates DenseLayer objects, a loss function, and an optimiser.
     Call build_from_config() to construct, then fit() to train.
     """
@@ -24,8 +24,8 @@ class NeuralNetwork:
     @classmethod
     def build_from_config(cls, config: dict | str) -> "NeuralNetwork":
         """
-        Constructs a NeuralNetwork from a JSON file.
-        Calls _build_layers, _attach_loss, _attach_optimizer, then inits optimiser state.
+        Constructs a NeuralNetwork from a config dict or a path to a JSON file.
+        Calls _build_layers, then inits loss and optimiser state.
         """
         if isinstance(config, str):
             with open(config) as f:
@@ -44,8 +44,7 @@ class NeuralNetwork:
         for spec in config["layers"]:
             if spec["type"] != "dense":
                 raise ValueError(f"Unsupported layer type '{spec['type']}'")
-            layer = DenseLayer(in_dim, spec["units"], spec["activation"])
-            self.layers.append(layer)
+            self.layers.append(DenseLayer(in_dim, spec["units"], spec["activation"]))
             in_dim = spec["units"]
 
     # ---------------------------------------------------------------- forward / backward
@@ -78,32 +77,42 @@ class NeuralNetwork:
 
     def fit(self, X: np.ndarray, y: np.ndarray,
             epochs: int = 100, batch_size: int | None = None,
-            verbose: bool = True) -> list[float]:
+            X_val: np.ndarray | None = None, y_val: np.ndarray | None = None,
+            verbose: bool = True) -> tuple[list[float], list[float]]:
         """
-        Trains the network; returns a list of per-epoch average losses.
-        Shuffles data each epoch; uses full-batch if batch_size is None.
+        Trains the network for a fixed number of epochs.
+        Returns (train_history, val_history); val_history is empty if no val data given.
+        Shuffles training data each epoch; uses full-batch if batch_size is None.
         """
         n = X.shape[0]
         batch_size = batch_size or n
-        history: list[float] = []
+        train_history: list[float] = []
+        val_history:   list[float] = []
 
         for epoch in range(1, epochs + 1):
             idx = np.random.permutation(n)
             X_s, y_s = X[idx], y[idx]
-            epoch_losses: list[float] = []
+            batch_losses: list[float] = []
 
             for start in range(0, n, batch_size):
                 Xb = X_s[start:start + batch_size]
                 yb = y_s[start:start + batch_size]
-                epoch_losses.append(self.train_step(Xb, yb))
+                batch_losses.append(self.train_step(Xb, yb))
 
-            mean_loss = float(np.mean(epoch_losses))
-            history.append(mean_loss)
+            train_loss = float(np.mean(batch_losses))
+            train_history.append(train_loss)
+
+            if X_val is not None and y_val is not None:
+                val_pred = self.predict(X_val)
+                val_loss = self._loss_fn(y_val, val_pred)
+                val_history.append(float(val_loss))
 
             if verbose and (epoch % max(1, epochs // 10) == 0 or epoch == 1):
-                print(f"Epoch {epoch:>{len(str(epochs))}}/{epochs}  loss={mean_loss:.6f}")
+                val_str = f"  val={val_history[-1]:.6f}" if val_history else ""
+                print(f"Epoch {epoch:>{len(str(epochs))}}/{epochs}"
+                      f"  train={train_loss:.6f}{val_str}")
 
-        return history
+        return train_history, val_history
 
     # ------------------------------------------------------------------ persistence
 

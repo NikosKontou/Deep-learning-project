@@ -5,25 +5,29 @@ import matplotlib.pyplot as plt
 from network import NeuralNetwork
 from datasets import get_dataset
 
+EPOCHS = 100
+
 
 def parse_args() -> tuple[str, str, str]:
-    """Reads config path, dataset name, and CSV path from argv."""
+    """Reads config path, dataset name, and data path from argv; exits on wrong usage."""
     if len(sys.argv) != 4:
         sys.exit(
-            "usage: python run.py <config.json> <dataset> <data.csv>\n"
-            "datasets: auto_mpg, breast_cancer\n"
-            "i.e.: python run.py ./config_regression.json auto_mpg ./data/auto-mpg.data"
+            "usage: python run.py <config.json> <dataset> <data.file>\n"
+            "datasets: auto_mpg, breast_cancer"
         )
     return sys.argv[1], sys.argv[2], sys.argv[3]
 
 
-def plot_loss(history: list[float], title: str, output_path: str) -> None:
-    """Saves a loss-vs-epoch plot to output_path; called after network.fit() returns."""
+def plot_loss(train_history: list[float], val_history: list[float],
+              title: str, output_path: str) -> None:
+    """Saves a train/val loss-vs-epoch plot; called after network.fit() returns."""
     plt.figure(figsize=(7, 3))
-    plt.plot(history)
+    plt.plot(train_history, label="train")
+    plt.plot(val_history,   label="val")
     plt.title(title)
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
+    plt.legend()
     plt.tight_layout()
     plt.savefig(output_path, dpi=120)
     plt.close()
@@ -48,16 +52,20 @@ def evaluate(net: NeuralNetwork, X_test: np.ndarray,
 
 
 if __name__ == "__main__":
-    config_path, dataset_name, csv_path = parse_args()
+    config_path, dataset_name, data_path = parse_args()
 
-    print(f"Loading '{dataset_name}' from '{csv_path}' ...")
-    X_train, X_test, y_train, y_test = get_dataset(dataset_name, csv_path)
-    print(f"  train: {X_train.shape}  test: {X_test.shape}")
+    print(f"Loading '{dataset_name}' from '{data_path}' ...")
+    X_train, X_val, X_test, y_train, y_val, y_test = get_dataset(dataset_name, data_path)
+    print(f"  train: {X_train.shape}  val: {X_val.shape}  test: {X_test.shape}")
 
     net = NeuralNetwork.build_from_config(config_path)
     print(f"Network built from '{config_path}'\n")
 
-    history = net.fit(X_train, y_train, epochs=200, batch_size=32)
+    train_history, val_history = net.fit(
+        X_train, y_train, epochs=EPOCHS, batch_size=32,
+        X_val=X_val, y_val=y_val,
+    )
 
     evaluate(net, X_test, y_test, dataset_name)
-    plot_loss(history, f"Training loss — {dataset_name}", f"{dataset_name}_loss.png")
+    plot_loss(train_history, val_history,
+              f"Training loss — {dataset_name}", f"{dataset_name}_loss.png")
