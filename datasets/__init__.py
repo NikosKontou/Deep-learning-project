@@ -1,5 +1,5 @@
-from .auto_mpg import load_auto_mpg
-from .breast_cancer import load_breast_cancer
+from datasets.auto_mpg import load_auto_mpg
+from datasets.breast_cancer import load_breast_cancer
 
 DATASET_MAP = {
     "auto_mpg":      load_auto_mpg,
