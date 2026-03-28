@@ -1,0 +1,10 @@
+{
+  "input_dimension": 7,
+  "layers": [
+    {"type": "dense", "units": 32, "activation": "relu"},
+    {"type": "dense", "units": 1,  "activation": "linear"}
+  ],
+  "loss": "mse",
+  "optimizer": "adabelief",
+  "learning_rate": 0.001
+}
