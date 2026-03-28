@@ -7,9 +7,9 @@ DATASET_MAP = {
 }
 
 
-def get_dataset(name: str, data_path: str) -> tuple:
-    """Dispatches to the correct loader; returns (X_train, X_val, X_test, y_train, y_val, y_test)."""
+def get_dataset(name: str, data_path: str):
+    """chooses a loader and returns X,y train/test/val 60/20/20."""
     name = name.lower()
     if name not in DATASET_MAP:
-        raise ValueError(f"Unknown dataset '{name}'. Choose from {list(DATASET_MAP)}")
+        raise ValueError(f"Unknown dataset")
     return DATASET_MAP[name](data_path)

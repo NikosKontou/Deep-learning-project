@@ -1,12 +1,3 @@
-"""
-Entry point for training a single network configuration.
-
-Usage (run from project root):
-    python -m src.train <configs/config.json> <dataset> <datasets/data.file>
-
-<dataset> must be one of: auto_mpg, breast_cancer
-"""
-
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,30 +9,13 @@ EPOCHS = 100
 
 
 def parse_args():
-    """Reads config path, dataset name, and data path from argv; exits on wrong usage."""
+    """config path, dataset name, data path are required"""
     if len(sys.argv) != 4:
         sys.exit(
             "usage: python -m src.train <config.json> <dataset> <data.file>\n"
             "datasets: auto_mpg, breast_cancer"
         )
     return sys.argv[1], sys.argv[2], sys.argv[3]
-
-
-def plot_loss(train_history: list[float], val_history: list[float],
-              title: str, output_path: str):
-    """Saves a train/val loss-vs-epoch plot to output_path; called after fit() returns."""
-    plt.figure(figsize=(7, 3))
-    plt.plot(train_history, label="train")
-    plt.plot(val_history,   label="val")
-    plt.title(title)
-    plt.xlabel("Epoch")
-    plt.ylabel("Loss")
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=120)
-    plt.close()
-    print(f"Plot saved to {output_path}")
-
 
 def evaluate(net: NeuralNetwork, X_test: np.ndarray,
              y_test: np.ndarray, dataset: str):
@@ -62,13 +36,10 @@ def evaluate(net: NeuralNetwork, X_test: np.ndarray,
 
 if __name__ == "__main__":
     config_path, dataset_name, data_path = parse_args()
-
-    print(f"Loading '{dataset_name}' from '{data_path}' ...")
     X_train, X_val, X_test, y_train, y_val, y_test = get_dataset(dataset_name, data_path)
     print(f"  train: {X_train.shape}  val: {X_val.shape}  test: {X_test.shape}")
 
     net = NeuralNetwork.build_from_config(config_path)
-    print(f"Network built from '{config_path}'\n")
 
     train_history, val_history = net.fit(
         X_train, y_train, epochs=EPOCHS, batch_size=32,
@@ -76,6 +47,3 @@ if __name__ == "__main__":
     )
 
     evaluate(net, X_test, y_test, dataset_name)
-    plot_loss(train_history, val_history,
-              f"Training loss — {dataset_name}",
-              f"report/{dataset_name}_loss.png")

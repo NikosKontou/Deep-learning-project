@@ -1,6 +1,7 @@
 import json
 import pickle
 import numpy as np
+from numpy.f2py.auxfuncs import throw_error
 
 from src.layers import DenseLayer
 from src.losses import get_loss
@@ -9,9 +10,8 @@ from src.optimizers import get_optimizer
 
 class NeuralNetwork:
     """
-    Feed-forward neural network built from a JSON config.
-    Orchestrates DenseLayer objects, a loss function, and an optimiser.
-    Call build_from_config() to construct, then fit() to train.
+    Feed-forward NN built from a JSON config.
+    Orchestrates a loss function, and an optimiser.
     """
 
     def __init__(self):
@@ -19,12 +19,12 @@ class NeuralNetwork:
         self._loss_fn = None
         self._optimizer = None
 
-    # ------------------------------------------------------------------ build
-
+    # build
+    # I need classmethod anotation so that i don't have to instantiate the class
+    #it acts as static in java
     @classmethod
-    def build_from_config(cls, config: dict | str):
+    def build_from_config(cls, config):
         """
-        Constructs a NeuralNetwork from a config dict or a path to a JSON file.
         Calls _build_layers, then inits loss and optimiser state.
         """
         if isinstance(config, str):
@@ -47,7 +47,7 @@ class NeuralNetwork:
             self.layers.append(DenseLayer(in_dim, spec["units"], spec["activation"]))
             in_dim = spec["units"]
 
-    # ---------------------------------------------------------------- forward / backward
+    # forward / backward
 
     def predict(self, X: np.ndarray):
         """Runs a full forward pass and returns the network output."""
@@ -61,7 +61,7 @@ class NeuralNetwork:
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
 
-    # ------------------------------------------------------------------ training
+    # training
 
     def train_step(self, X: np.ndarray, y: np.ndarray):
         """
@@ -109,12 +109,11 @@ class NeuralNetwork:
 
             if verbose and (epoch % max(1, epochs // 10) == 0 or epoch == 1):
                 val_str = f"  val={val_history[-1]:.6f}" if val_history else ""
-                print(f"Epoch {epoch:>{len(str(epochs))}}/{epochs}"
-                      f"  train={train_loss:.6f}{val_str}")
+                print(f"Epoch {epoch}/{epochs}  train={train_loss:.4f}{val_str}")
 
         return train_history, val_history
 
-    # ------------------------------------------------------------------ persistence
+    # persistence
 
     def save(self, path: str):
         """Serialises the network to disk via pickle."""

@@ -1,19 +1,11 @@
-"""
-Breast Cancer Wisconsin (Diagnostic) — binary classification dataset (UCI id=17).
-Raw file: https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data
-Comma-delimited, no header. Column order: id, diagnosis (M/B), 30 numeric features.
-M is encoded as 1, B as 0.
-"""
-
 import numpy as np
 import pandas as pd
 from datasets.utils import standardise, train_val_test_split
 
 
-def load_breast_cancer(data_path: str) -> tuple[np.ndarray, ...]:
+def load_breast_cancer(data_path: str):
     """
-    Loads Breast Cancer Wisconsin from data_path; drops the id column, encodes M=1/B=0.
-    Returns X_train, X_val, X_test, y_train, y_val, y_test as float64 arrays.
+    loads the data_path drops the id column, encodes M=1/B=0
     """
     df = pd.read_csv(data_path, header=None)
     # column 0 = id (drop), column 1 = diagnosis, columns 2..31 = features
