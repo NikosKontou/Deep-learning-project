@@ -7,13 +7,13 @@ class SGD:
     Interacts with Network.train_step via init_state / step.
     """
 
-    def __init__(self, lr: float = 1e-2) -> None:
+    def __init__(self, lr: float = 1e-2):
         self.lr = lr
 
-    def init_state(self, layers) -> None:
+    def init_state(self, layers):
         """No state required; exists so all optimisers are the same."""
 
-    def step(self, layers) -> None:
+    def step(self, layers):
         """Updates each layer's W in-place using its dW gradient."""
         for layer in layers:
             layer.W -= self.lr * layer.dW
@@ -25,16 +25,16 @@ class MomentumSGD:
     Interacts with Network.train_step via init_state / step.
     """
 
-    def __init__(self, lr: float = 1e-2, beta: float = 0.9) -> None:
+    def __init__(self, lr: float = 1e-2, beta: float = 0.9):
         self.lr = lr
         self.beta = beta
         self._v: list[np.ndarray] = []
 
-    def init_state(self, layers) -> None:
+    def init_state(self, layers):
         """Allocates velocity buffers; called once by Network after layer construction."""
         self._v = [np.zeros_like(layer.W) for layer in layers]
 
-    def step(self, layers) -> None:
+    def step(self, layers):
         """Updates velocity then W in-place for each layer."""
         for i, layer in enumerate(layers):
             self._v[i] = self.beta * self._v[i] + (1.0 - self.beta) * layer.dW
@@ -49,7 +49,7 @@ class AdaBelief:
     """
 
     def __init__(self, lr: float = 1e-3, beta1: float = 0.9,
-                 beta2: float = 0.999, eps: float = 1e-8) -> None:
+                 beta2: float = 0.999, eps: float = 1e-8):
         self.lr = lr
         self.beta1 = beta1
         self.beta2 = beta2
@@ -58,12 +58,12 @@ class AdaBelief:
         self._s: list[np.ndarray] = []   # second moment (belief)
         self._t: int = 0
 
-    def init_state(self, layers) -> None:
+    def init_state(self, layers):
         """Allocates moment buffers; called once by Network after layer construction."""
         self._m = [np.zeros_like(layer.W) for layer in layers]
         self._s = [np.zeros_like(layer.W) for layer in layers]
 
-    def step(self, layers) -> None:
+    def step(self, layers):
         """Updates m, s with bias correction then applies the AdaBelief update rule."""
         self._t += 1
         bc1 = 1.0 - self.beta1 ** self._t

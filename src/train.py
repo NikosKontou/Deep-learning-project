@@ -17,7 +17,7 @@ from datasets import get_dataset
 EPOCHS = 100
 
 
-def parse_args() -> tuple[str, str, str]:
+def parse_args():
     """Reads config path, dataset name, and data path from argv; exits on wrong usage."""
     if len(sys.argv) != 4:
         sys.exit(
@@ -28,7 +28,7 @@ def parse_args() -> tuple[str, str, str]:
 
 
 def plot_loss(train_history: list[float], val_history: list[float],
-              title: str, output_path: str) -> None:
+              title: str, output_path: str):
     """Saves a train/val loss-vs-epoch plot to output_path; called after fit() returns."""
     plt.figure(figsize=(7, 3))
     plt.plot(train_history, label="train")
@@ -44,7 +44,7 @@ def plot_loss(train_history: list[float], val_history: list[float],
 
 
 def evaluate(net: NeuralNetwork, X_test: np.ndarray,
-             y_test: np.ndarray, dataset: str) -> None:
+             y_test: np.ndarray, dataset: str):
     """
     Prints a task-appropriate metric on the test split.
     Uses RMSE for auto_mpg and accuracy for breast_cancer.

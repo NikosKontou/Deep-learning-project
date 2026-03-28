@@ -14,7 +14,7 @@ class NeuralNetwork:
     Call build_from_config() to construct, then fit() to train.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.layers: list[DenseLayer] = []
         self._loss_fn = None
         self._optimizer = None
@@ -22,7 +22,7 @@ class NeuralNetwork:
     # ------------------------------------------------------------------ build
 
     @classmethod
-    def build_from_config(cls, config: dict | str) -> "NeuralNetwork":
+    def build_from_config(cls, config: dict | str):
         """
         Constructs a NeuralNetwork from a config dict or a path to a JSON file.
         Calls _build_layers, then inits loss and optimiser state.
@@ -38,7 +38,7 @@ class NeuralNetwork:
         net._optimizer.init_state(net.layers)
         return net
 
-    def _build_layers(self, config: dict) -> None:
+    def _build_layers(self, config: dict):
         """Instantiates DenseLayer objects; infers in_dim from previous layer's units."""
         in_dim = config["input_dimension"]
         for spec in config["layers"]:
@@ -49,21 +49,21 @@ class NeuralNetwork:
 
     # ---------------------------------------------------------------- forward / backward
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, X: np.ndarray):
         """Runs a full forward pass and returns the network output."""
         out = X
         for layer in self.layers:
             out = layer.forward(out)
         return out
 
-    def _backward(self, grad: np.ndarray) -> None:
+    def _backward(self, grad: np.ndarray):
         """Propagates grad backwards through all layers, populating each layer's dW."""
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
 
     # ------------------------------------------------------------------ training
 
-    def train_step(self, X: np.ndarray, y: np.ndarray) -> float:
+    def train_step(self, X: np.ndarray, y: np.ndarray):
         """
         Runs one forward pass, computes loss, backpropagates, and calls optimiser.step.
         Returns the scalar loss value.
@@ -78,7 +78,7 @@ class NeuralNetwork:
     def fit(self, X: np.ndarray, y: np.ndarray,
             epochs: int = 100, batch_size: int | None = None,
             X_val: np.ndarray | None = None, y_val: np.ndarray | None = None,
-            verbose: bool = True) -> tuple[list[float], list[float]]:
+            verbose: bool = True):
         """
         Trains the network for a fixed number of epochs.
         Returns (train_history, val_history); val_history is empty if no val data given.
@@ -116,13 +116,13 @@ class NeuralNetwork:
 
     # ------------------------------------------------------------------ persistence
 
-    def save(self, path: str) -> None:
+    def save(self, path: str):
         """Serialises the network to disk via pickle."""
         with open(path, "wb") as f:
             pickle.dump(self, f)
 
     @staticmethod
-    def load(path: str) -> "NeuralNetwork":
+    def load(path: str):
         """Deserialises a network saved with save()."""
         with open(path, "rb") as f:
             return pickle.load(f)

@@ -6,11 +6,11 @@ _EPS = 1e-12  # numerical stability clip for BCE
 class MSELoss:
     """Mean squared error — used by the network to compute loss and its gradient."""
 
-    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray):
         self._diff = y_pred - y_true
         return float(np.mean(self._diff ** 2))
 
-    def gradient(self, y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
+    def gradient(self, y_true: np.ndarray, y_pred: np.ndarray):
         """Returns dL/dy_pred; call after __call__ with the same inputs."""
         n = y_true.shape[0]
         return (2.0 / n) * self._diff
@@ -19,13 +19,13 @@ class MSELoss:
 class BCELoss:
     """Binary cross-entropy — used by the network to compute loss and its gradient."""
 
-    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray):
         p = np.clip(y_pred, _EPS, 1.0 - _EPS)
         self._p = p
         self._y = y_true
         return float(-np.mean(y_true * np.log(p) + (1.0 - y_true) * np.log(1.0 - p)))
 
-    def gradient(self, y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
+    def gradient(self, y_true: np.ndarray, y_pred: np.ndarray):
         """Returns dL/dy_pred; call after __call__ with the same inputs."""
         n = y_true.shape[0]
         return (-(self._y / self._p) + (1.0 - self._y) / (1.0 - self._p)) / n

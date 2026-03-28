@@ -7,7 +7,7 @@ DATASET_MAP = {
 }
 
 
-def get_dataset(name: str, data_path: str) -> tuple:
+def get_dataset(name: str, data_path: str):
     """Dispatches to the correct loader; returns (X_train, X_val, X_test, y_train, y_val, y_test)."""
     name = name.lower()
     if name not in DATASET_MAP:

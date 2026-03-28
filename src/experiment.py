@@ -61,14 +61,14 @@ _BC_TARGET = "diagnosis"
 # CLI helpers
 # ═════════════════════════════════════════════════════════════════════════════
 
-def _header(title: str) -> None:
+def _header(title: str):
     """Prints a section divider and title."""
     print(f"\n{'─' * 58}")
     print(f"  {title}")
     print(f"{'─' * 58}")
 
 
-def _ask_choice(prompt: str, options: list) -> str:
+def _ask_choice(prompt: str, options: list):
     """Prints a numbered menu and returns the chosen option string."""
     print(f"\n{prompt}")
     for i, opt in enumerate(options, 1):
@@ -80,7 +80,7 @@ def _ask_choice(prompt: str, options: list) -> str:
         print(f"  Enter a number between 1 and {len(options)}.")
 
 
-def _ask_path(prompt: str) -> str:
+def _ask_path(prompt: str):
     """Prompts for a file path; keeps asking until the file exists."""
     while True:
         raw = input(f"\n{prompt}\n  > ").strip()
@@ -89,7 +89,7 @@ def _ask_path(prompt: str) -> str:
         print(f"  File not found: '{raw}'. Please try again.")
 
 
-def _report_dir(dataset: str) -> str:
+def _report_dir(dataset: str):
     """Creates report/<dataset>/ if needed and returns the path."""
     path = os.path.join("report", dataset)
     os.makedirs(path, exist_ok=True)
@@ -104,7 +104,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def _plot_depth_curves(histories: list[tuple], title: str, out_path: str) -> None:
+def _plot_depth_curves(histories: list[tuple], title: str, out_path: str):
     # Auto-generate two filenames based on the provided out_path
     base, ext = os.path.splitext(out_path)
     out_path_full = f"{base}_full{ext}"
@@ -157,7 +157,7 @@ def _plot_depth_curves(histories: list[tuple], title: str, out_path: str) -> Non
     print(f"  Plots → {out_path_full}, {out_path_zoom}")
 
 def _build_config(arch: str, optimizer: str, lr: float,
-                  dataset: str, input_dim: int) -> dict:
+                  dataset: str, input_dim: int):
     """
     Constructs a network config dict from architecture name and dataset.
     input_dim is read from X_train.shape[1]; output activation and loss
@@ -182,7 +182,7 @@ def _build_config(arch: str, optimizer: str, lr: float,
 
 
 def _compute_metrics(net: NeuralNetwork, X: np.ndarray,
-                     y: np.ndarray, dataset: str) -> dict:
+                     y: np.ndarray, dataset: str):
     """Returns MAE + RMSE for regression or accuracy for classification."""
     y_pred = net.predict(X)
     if dataset == "auto_mpg":
@@ -193,7 +193,7 @@ def _compute_metrics(net: NeuralNetwork, X: np.ndarray,
     return {"Accuracy": acc}
 
 
-def _load_dataset(dataset: str) -> tuple:
+def _load_dataset(dataset: str):
     """
     Asks user for the data file path and returns all six splits.
     Returns (dataset, X_train, X_val, X_test, y_train, y_val, y_test).
@@ -205,7 +205,7 @@ def _load_dataset(dataset: str) -> tuple:
     return X_train, X_val, X_test, y_train, y_val, y_test
 
 
-def _plot_loss_curves(histories: list[tuple], title: str, out_path: str) -> None:
+def _plot_loss_curves(histories: list[tuple], title: str, out_path: str):
     """
     Plots overlaid train/val loss curves for multiple runs.
     histories is a list of (label, train_history, val_history).
@@ -229,7 +229,7 @@ def _plot_loss_curves(histories: list[tuple], title: str, out_path: str) -> None
 
 
 def _print_results_table(records: list[dict], dataset: str,
-                          metric_name: str) -> None:
+                          metric_name: str):
     """Prints results in the required Problem|Optimizer|Batch|LR|Arch|Metric format."""
     col_w  = [16, 14, 7, 7, 6, 12]
     header = ["Problem", "Optimizer", "Batch", "LR", "Arch", metric_name]
@@ -255,7 +255,7 @@ def _print_results_table(records: list[dict], dataset: str,
 # Mode 1 — Train a single network
 # ═════════════════════════════════════════════════════════════════════════════
 
-def mode_train() -> None:
+def mode_train():
     """
     Trains one network from user-specified parameters or a JSON config file.
     Prints train/val/test metrics and saves a loss curve plot.
@@ -317,7 +317,7 @@ def mode_train() -> None:
 # Mode 2 — Optimizer comparison
 # ═════════════════════════════════════════════════════════════════════════════
 
-def mode_optimizer_comparison() -> None:
+def mode_optimizer_comparison():
     """
     Trains all three optimizers under a fixed arch, lr, and batch size.
     Produces one combined loss-curve plot per architecture and prints a results table.
@@ -369,7 +369,7 @@ def mode_optimizer_comparison() -> None:
 # Mode 3 — Network depth experiment
 # ═════════════════════════════════════════════════════════════════════════════
 
-def mode_depth_experiment() -> None:
+def mode_depth_experiment():
     """
     Loads the two depth config files for the chosen dataset and trains them
     with identical optimizer, lr, and batch size to isolate the effect of depth.
@@ -436,7 +436,7 @@ def mode_depth_experiment() -> None:
 # Mode 4 — Learning rate sensitivity
 # ═════════════════════════════════════════════════════════════════════════════
 
-def mode_lr_sensitivity() -> None:
+def mode_lr_sensitivity():
     """
     Trains the same arch and optimizer at both learning rates.
     Produces one combined loss-curve plot and prints a results table.
@@ -488,7 +488,7 @@ def mode_lr_sensitivity() -> None:
 # Mode 5 — Full grid experiment (all 24 runs)
 # ═════════════════════════════════════════════════════════════════════════════
 
-def mode_full_grid() -> None:
+def mode_full_grid():
     """
     Runs all 24 combinations of optimizer x lr x batch_size x architecture.
     Saves a results CSV, a 24-subplot loss-curve grid, and a val-metric bar chart.
@@ -556,7 +556,7 @@ def mode_full_grid() -> None:
 
 
 def _plot_full_grid_curves(df: pd.DataFrame, dataset: str,
-                            report_dir: str) -> None:
+                            report_dir: str):
     """Saves a grid of 24 individual train/val loss-curve subplots."""
     n_runs = len(df)
     n_cols = 4
@@ -587,7 +587,7 @@ def _plot_full_grid_curves(df: pd.DataFrame, dataset: str,
 
 
 def _plot_full_grid_bar(df: pd.DataFrame, dataset: str,
-                         metric_name: str, report_dir: str) -> None:
+                         metric_name: str, report_dir: str):
     """Saves a bar chart ranking all 24 configurations by validation metric."""
     val_col = f"val_{metric_name}"
     labels  = [
@@ -627,7 +627,7 @@ _MENU = [
 ]
 
 
-def main() -> None:
+def main():
     print("Neural Network Framework — ITC6230")
 
     while True:
