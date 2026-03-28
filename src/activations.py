@@ -45,15 +45,14 @@ class Linear:
 
 
 ACTIVATION_MAP: dict = {
-    "relu":    ReLU,
-    "tanh":    Tanh,
+    "relu": ReLU,
+    "tanh": Tanh,
     "sigmoid": Sigmoid,
-    "linear":  Linear,
+    "linear": Linear,
 }
 
 
 def get_activation(name: str):
-    """Returns an activation instance by name; raises ValueError for unknown names."""
     name = name.lower()
     if name not in ACTIVATION_MAP:
         raise ValueError(f"Unknown activation '{name}'. Choose from {list(ACTIVATION_MAP)}")

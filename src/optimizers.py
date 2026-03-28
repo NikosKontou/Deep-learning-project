@@ -11,7 +11,7 @@ class SGD:
         self.lr = lr
 
     def init_state(self, layers) -> None:
-        """No state required; exists so all optimisers share the same interface."""
+        """No state required; exists so all optimisers are the same."""
 
     def step(self, layers) -> None:
         """Updates each layer's W in-place using its dW gradient."""

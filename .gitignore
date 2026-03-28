@@ -187,6 +187,7 @@ fabric.properties
 #extras
 regression_loss.png
 classification_loss.png
-/*.jpg
-/*.png
+*.jpg
+*.png
+*.csv
 /.idea
