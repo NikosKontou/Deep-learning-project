@@ -43,7 +43,6 @@ if __name__ == "__main__":
 
     train_history, val_history = net.fit(
         X_train, y_train, epochs=EPOCHS, batch_size=32,
-        X_val=X_val, y_val=y_val,
-    )
+        X_val=X_val, y_val=y_val)
 
     evaluate(net, X_test, y_test, dataset_name)

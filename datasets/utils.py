@@ -7,10 +7,9 @@ def train_val_test_split(
     X: np.ndarray, y: np.ndarray,
     val_ratio: float = 0.2,
     test_ratio: float = 0.2,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray,
-           np.ndarray, np.ndarray, np.ndarray]:
+):
     """
-    Shuffles and splits into 60/20/20 train/val/test using RANDOM_SEED.
+    randomizes and splits into 60/20/20 train/val/test using RANDOM_SEED.
     Returns X_train, X_val, X_test, y_train, y_val, y_test.
     """
     rng = np.random.default_rng(RANDOM_SEED)

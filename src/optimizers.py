@@ -31,7 +31,7 @@ class MomentumSGD:
         self._v: list[np.ndarray] = []
 
     def init_state(self, layers):
-        """Allocates velocity buffers; called once by Network after layer construction."""
+        """Allocates velocity buffers, called once by Network after layer construction."""
         self._v = [np.zeros_like(layer.W) for layer in layers]
 
     def step(self, layers):

@@ -1,8 +1,5 @@
 import json
-import pickle
 import numpy as np
-from numpy.f2py.auxfuncs import throw_error
-
 from src.layers import DenseLayer
 from src.losses import get_loss
 from src.optimizers import get_optimizer
@@ -30,6 +27,8 @@ class NeuralNetwork:
         if isinstance(config, str):
             with open(config) as f:
                 config = json.load(f)
+        else:
+            IOError("connot find config path, give a string")
 
         net = cls()
         net._build_layers(config)
@@ -57,7 +56,7 @@ class NeuralNetwork:
         return out
 
     def _backward(self, grad: np.ndarray):
-        """Propagates grad backwards through all layers, populating each layer's dW."""
+        """Propagates gradient backwards through all layers, populating each layer's dW (weight derivative)."""
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
 
@@ -76,8 +75,8 @@ class NeuralNetwork:
         return loss
 
     def fit(self, X: np.ndarray, y: np.ndarray,
-            epochs: int = 100, batch_size: int | None = None,
-            X_val: np.ndarray | None = None, y_val: np.ndarray | None = None,
+            epochs: int = 100, batch_size= 32,
+            X_val= None, y_val= None,
             verbose: bool = True):
         """
         Trains the network for 100 epochs.
@@ -85,7 +84,6 @@ class NeuralNetwork:
         mixes training data each epoch.
         """
         n = X.shape[0]
-        batch_size = batch_size or n
         train_history: list[float] = []
         val_history:   list[float] = []
 
@@ -107,8 +105,8 @@ class NeuralNetwork:
                 val_loss = self._loss_fn(y_val, val_pred)
                 val_history.append(float(val_loss))
 
-            if verbose and (epoch % max(1, epochs // 10) == 0 or epoch == 1):
-                val_str = f"  val={val_history[-1]:.6f}" if val_history else ""
+            if epoch == 1 or epoch % 10 == 0:
+                val_str = f"  val={val_history[-1]:.4f}" if val_history else ""
                 print(f"Epoch {epoch}/{epochs}  train={train_loss:.4f}{val_str}")
 
         return train_history, val_history
