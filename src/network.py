@@ -80,9 +80,9 @@ class NeuralNetwork:
             X_val: np.ndarray | None = None, y_val: np.ndarray | None = None,
             verbose: bool = True):
         """
-        Trains the network for a fixed number of epochs.
-        Returns (train_history, val_history); val_history is empty if no val data given.
-        Shuffles training data each epoch; uses full-batch if batch_size is None.
+        Trains the network for 100 epochs.
+        returns train_history, val_history.
+        mixes training data each epoch.
         """
         n = X.shape[0]
         batch_size = batch_size or n
@@ -112,16 +112,3 @@ class NeuralNetwork:
                 print(f"Epoch {epoch}/{epochs}  train={train_loss:.4f}{val_str}")
 
         return train_history, val_history
-
-    # persistence
-
-    def save(self, path: str):
-        """Serialises the network to disk via pickle."""
-        with open(path, "wb") as f:
-            pickle.dump(self, f)
-
-    @staticmethod
-    def load(path: str):
-        """Deserialises a network saved with save()."""
-        with open(path, "rb") as f:
-            return pickle.load(f)
