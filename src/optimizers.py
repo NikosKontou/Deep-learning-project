@@ -11,7 +11,7 @@ class SGD:
         self.lr = lr
 
     def init_state(self, layers):
-        """No state required; exists so all optimisers are the same."""
+        """exists so all optimisers are the same."""
 
     def step(self, layers):
         """Updates each layer's W in-place using its dW gradient."""
@@ -59,7 +59,7 @@ class AdaBelief:
         self._t: int = 0
 
     def init_state(self, layers):
-        """Allocates moment buffers; called once by Network after layer construction."""
+        """Init moment buffers. It is called by Network after layer construction."""
         self._m = [np.zeros_like(layer.W) for layer in layers]
         self._s = [np.zeros_like(layer.W) for layer in layers]
 
@@ -90,7 +90,7 @@ OPTIMIZER_MAP: dict = {
 
 
 def get_optimizer(name: str, lr: float):
-    """Returns an optimiser instance by name; raises ValueError for unknown names."""
+    """Returns an optimiser instance by name"""
     name = name.lower()
     if name not in OPTIMIZER_MAP:
         raise ValueError(f"Unknown optimizer '{name}'. Choose from {list(OPTIMIZER_MAP)}")

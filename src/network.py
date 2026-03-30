@@ -38,7 +38,7 @@ class NeuralNetwork:
         return net
 
     def _build_layers(self, config: dict):
-        """Instantiates DenseLayer objects; infers in_dim from previous layer's units."""
+        """Instantiates DenseLayer objects and infers in_dim from previous layer's units."""
         in_dim = config["input_dimension"]
         for spec in config["layers"]:
             if spec["type"] != "dense":

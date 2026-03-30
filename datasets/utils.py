@@ -30,7 +30,8 @@ def standardise(
     X_val: np.ndarray,
     X_test: np.ndarray,
 ):
-    """Z-scores X_train; applies same mean/std to X_val and X_test to prevent data leakage."""
+    """Z-scores X_train."""
+    # use train data to calculate mean/std to X_val and X_test to prevent data leakage.
     mean = X_train.mean(axis=0)
     std  = X_train.std(axis=0) + 1e-8
     # return a tuple of 3 numpy arrays

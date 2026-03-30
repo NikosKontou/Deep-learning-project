@@ -8,7 +8,7 @@ DATASET_MAP = {
 
 
 def get_dataset(name: str, data_path: str):
-    """Dispatches to the correct loader; returns (X_train, X_val, X_test, y_train, y_val, y_test)."""
+    """returns X_train, X_val, X_test, y_train, y_val, y_test using the correct loader"""
     name = name.lower()
     if name not in DATASET_MAP:
         raise ValueError(f"Unknown dataset '{name}'. Choose from {list(DATASET_MAP)}")

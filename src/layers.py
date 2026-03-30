@@ -26,7 +26,7 @@ class DenseLayer:
         return np.random.randn(in_dim, out_dim) * scale
 
     def forward(self, x: np.ndarray):
-        """Computes a = activation(xW); caches x and z for backward."""
+        """Computes a = activation(xW). Then caches x and z for backward."""
         self._x = x
         self._z = x @ self.W
         return self.activation.forward(self._z)

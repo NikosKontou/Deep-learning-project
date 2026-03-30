@@ -20,8 +20,8 @@ def parse_args():
 def evaluate(net: NeuralNetwork, X_test: np.ndarray,
              y_test: np.ndarray, dataset: str):
     """
-    Prints a task-appropriate metric on the test split.
-    Uses RMSE for auto_mpg and accuracy for breast_cancer.
+    Prints them metric on the test split.
+    RMSE for auto_mpg and accuracy for breast_cancer.
     """
     y_pred = net.predict(X_test)
     if dataset == "auto_mpg":
