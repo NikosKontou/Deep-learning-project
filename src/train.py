@@ -17,6 +17,7 @@ def parse_args():
         )
     return sys.argv[1], sys.argv[2], sys.argv[3]
 
+
 def evaluate(net: NeuralNetwork, X_test: np.ndarray,
              y_test: np.ndarray, dataset: str):
     """
@@ -29,6 +30,7 @@ def evaluate(net: NeuralNetwork, X_test: np.ndarray,
         print(f"Test MSE:      {mse:.4f}")
         print(f"Test RMSE:     {mse ** 0.5:.4f}")
     else:
+        # threshold at 0.5 — sigmoid output above 0.5 is predicted as class 1 (malignant)
         preds = (y_pred > 0.5).astype(float)
         acc   = float(np.mean(preds == y_test))
         print(f"Test accuracy: {acc:.4f}")
@@ -36,13 +38,18 @@ def evaluate(net: NeuralNetwork, X_test: np.ndarray,
 
 if __name__ == "__main__":
     config_path, dataset_name, data_path = parse_args()
+
+    # get_dataset() is in datasets/__init__.py
+    # applies 60/20/20 split with seed 42, and standardises features
     X_train, X_val, X_test, y_train, y_val, y_test = get_dataset(dataset_name, data_path)
     print(f"  train: {X_train.shape}  val: {X_val.shape}  test: {X_test.shape}")
 
+    # reads the JSON config, builds layers, attaches loss and optimizer
     net = NeuralNetwork.build_from_config(config_path)
 
     train_history, val_history = net.fit(
         X_train, y_train, epochs=EPOCHS, batch_size=32,
-        X_val=X_val, y_val=y_val)
+        X_val=X_val, y_val=y_val,
+    )
 
     evaluate(net, X_test, y_test, dataset_name)
