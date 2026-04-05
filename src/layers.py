@@ -4,7 +4,6 @@ from src.activations import get_activation
 class DenseLayer:
     """
     One fully-connected layer without bias.
-    forward() computes the output of the layer.
     backward() computes the gradients and passes them to the previous layer.
     """
     def __init__(self, in_dim: int, out_dim: int, activation: str):
@@ -35,7 +34,7 @@ class DenseLayer:
         x is the input from the previous layer (or the raw data for the first layer).
         Caches x and z so backward() can use them later.
         """
-        # cache the input — backward() needs it to compute dL/dW = x.T @ delta
+        # cache the input. backward() needs it to compute dL/dW = x.T @ delta
         self._x = x
         # matrix multiply: (batch, in_dim) @ (in_dim, out_dim) → (batch, out_dim)
         self._z = x @ self.W
@@ -52,10 +51,10 @@ class DenseLayer:
         da_dz = self.activation.derivative(self._z)
 
         # element-wise multiply — applies chain rule through the activation
-        # delta is dL/dz, shape: (batch, out_dim)
+        # delta= dL/dz, shape: (batch, out_dim)
         delta = grad_out * da_dz
 
-        # dL/dW — this is what the optimizer will use to update W
+        # dL/dW — the derivative of the loss
         # shape: (in_dim, batch) @ (batch, out_dim) → (in_dim, out_dim), same as W
         self.dW = self._x.T @ delta
 

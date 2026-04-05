@@ -3,7 +3,7 @@ import numpy as np
 
 class SGD:
     """
-    Vanilla gradient descent
+    simple gradient descent
     """
 
     def __init__(self, lr: float = 1e-2):

@@ -59,7 +59,6 @@ ACTIVATION_MAP: dict = {
     "linear": Linear,
 }
 
-
 def get_activation(name: str):
     """Called by DenseLayer.__init__ to attach the correct activation to a layer."""
     name = name.lower()
